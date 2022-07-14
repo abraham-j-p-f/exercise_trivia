@@ -4,12 +4,12 @@
 
 @font-face {
     font-family: 'Gamja';
-    src: url('./fonts/gamja/Gamja_Flower/GamjaFlower-Regular.ttf');
+    src: url('./utillities/fonts/gamja/Gamja_Flower/GamjaFlower-Regular.ttf');
 }
 
 @font-face {
     font-family: 'pstart';
-    src: url('./fonts/pressStart/Press_Start_2P/PressStart2P-Regular.ttf');
+    src: url('./utillities/fonts/pressStart/Press_Start_2P/PressStart2P-Regular.ttf');
 }
 
 @keyframes flicker {

@@ -1,25 +1,23 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import he from "he";
-import { useData } from "../contexts/generalContext";
+import { useData, useDataSeters } from "../contexts/triviaContext";
+import { stages } from "../hooks/stageReducer";
 
-export default function Answers({ useScore, useActual, useTrivias }) {
-  const [trivias, setTrivias] = useTrivias;
+export default function Answers() {
   const [answer, setAnswer] = useState();
-  const [actual, setActual] = useActual;
-  const [score, setScore] = useScore;
-  const [name, difficulty, quantity] = useData();
-  const radio = useRef();
+  const { difficulty, quantity, actual, questions, score } = useData();
+  const { setScore, setActual, setQuestions, dispatch } = useDataSeters();
 
   async function getTrivias() {
     const url = `https://opentdb.com/api.php?amount=${quantity}&difficulty=${difficulty}&type=boolean`;
     const response = await fetch(url);
     const data = await response.json();
-    const trivias = await data.results;
-    trivias.forEach((element) => {
+    const questions = await data.results;
+    questions.forEach((element) => {
       element.category = he.decode(element.category);
       element.question = he.decode(element.question);
     });
-    setTrivias(trivias);
+    setQuestions(questions);
   }
 
   useEffect(() => {
@@ -31,13 +29,15 @@ export default function Answers({ useScore, useActual, useTrivias }) {
       setScore([
         ...score,
         {
-          question: trivias[actual].question,
-          answer: trivias[actual].correct_answer,
-          success: trivias[actual].correct_answer === answer,
+          question: questions[actual].question,
+          answer: questions[actual].correct_answer,
+          success: questions[actual].correct_answer === answer,
         },
       ]);
       setAnswer();
-      setActual(actual + 1);
+      const next = actual + 1
+
+      next < quantity ? setActual(next) : dispatch({ type: stages.result })
     }
   }
 
@@ -80,7 +80,7 @@ export default function Answers({ useScore, useActual, useTrivias }) {
     );
   }
 
-  if (!trivias) {
+  if (!questions) {
     return (
       <div className="flex w-full h-full justify-center items-center">
         <h1 className="text-white">Loading...</h1>
@@ -91,11 +91,11 @@ export default function Answers({ useScore, useActual, useTrivias }) {
     <div className="text-white flex flex-wrap h-full justify-center content-center">
       <div className="flex justify-center my-2 text-xl">
         <h1 className="uppercase text-center">
-          Category: {trivias[actual].category}
+          Category: {questions[actual].category}
         </h1>
       </div>
       <div className="flex justify-center my-4">
-        <p className="text-center">{trivias[actual].question}</p>
+        <p className="text-center">{questions[actual].question}</p>
       </div>
       <div className="flex justify-evenly w-full my-4 text-black flex-row-reverse">
         <Radio name="answer" id="True" value="True">

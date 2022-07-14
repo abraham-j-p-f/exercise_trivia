@@ -1,19 +1,9 @@
-import { useData } from "../contexts/generalContext";
-import { useUpdatedData } from "../contexts/generalContext";
+import { useData, useDataSeters } from "../contexts/triviaContext";
+import { stages } from "../hooks/stageReducer";
 
-export default function Result({ useScore, useActual }) {
-  const [name, difficulty, quantity] = useData();
-  const [setName, setDifficulty, setQuantity] = useUpdatedData();
-  const [score, setScore] = useScore;
-  const [actual, setActual] = useActual;
-
-  const resetData = () => {
-    setName();
-    setDifficulty();
-    setQuantity();
-    setScore([]);
-    setActual(0)
-  };
+export default function Result() {
+  const { name, difficulty, quantity, score } = useData();
+  const { dispatch } = useDataSeters();
 
   return (
     <>
@@ -38,7 +28,7 @@ export default function Result({ useScore, useActual }) {
         <ul>
           {score.map((question) => {
             return (
-              <li
+              <li key={ question.question }
                 className={`text-sm indent-8 text-justify m-4 p-4 ${
                   question.success ? "bg-green-500" : "bg-red-500"
                 }`}
@@ -50,7 +40,7 @@ export default function Result({ useScore, useActual }) {
         </ul>
       </div>
       <div className="flex justify-center content-center mb-3 h-1/6">
-        <button className="px-4" onClick={resetData}>
+        <button className="px-4" onClick={ () => dispatch({ type: stages.home }) }>
           Try again
         </button>
       </div>
