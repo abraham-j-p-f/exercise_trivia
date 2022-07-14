@@ -172,3 +172,7 @@
   .crt {
     animation: textShadow 1.6s infinite;
   }
+
+  .textcrt {
+    animation: textShadow 1.6s infinite;
+  }

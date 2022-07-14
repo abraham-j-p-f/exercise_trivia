@@ -53,14 +53,21 @@ export default function Answers({ useScore, useActual, useTrivias }) {
     );
   }
 
-  function Radio({ color, name, id, children, value }) {
-    const container = `border-${color}-700 border-4 flex items-center p-1 bg-white font-medium`;
-    const radio = `form-radio checked:bg-none rounded-none transition-all duration-200 h-10 w-10 border-${color}-700 border-4 text-${color}-700 checked:bg-${color}-700 focus:border-${color}-700 focus:ring-inset focus:ring-2 focus:ring-white`;
-    const text = `mx-4 text-${color}-700 uppercase`;
+  function Radio({ name, id, children, value }) {
+    const ROG = value === "True";
+    const border = `${ROG ? "border-green-700" : "border-red-700"}`;
+    const borderFocus = `${
+      ROG ? "focus:border-green-700" : "focus:border-red-700"
+    }`;
+    const text = `${ROG ? "text-green-700" : "text-red-700"}`;
+    const bgChecked = `${ROG ? "checked:bg-green-700" : "checked:bg-red-700"}`;
+
     return (
-      <div className={container}>
+      <div
+        className={`${border} border-4 flex items-center p-1 bg-white font-medium`}
+      >
         <input
-          className={radio}
+          className={`form-radio checked:bg-none rounded-none transition-all duration-200 h-10 w-10 ${border} border-4 ${text} ${bgChecked} ${borderFocus} focus:ring-inset focus:ring-2 focus:ring-white`}
           type="radio"
           name={name}
           id={id}
@@ -68,43 +75,41 @@ export default function Answers({ useScore, useActual, useTrivias }) {
           checked={answer === value}
           onChange={handleChange}
         />
-        <span className={text}>{children}</span>
+        <span className={`mx-4 ${text} uppercase`}>{children}</span>
       </div>
     );
   }
 
   if (!trivias) {
     return (
-      <div className="shadow-inner crt bg-neutral-900 px-4 overflow-hidden rounded-3xl relative h-2/3 aspect-4/3 flex justify-center items-center">
+      <div className="flex w-full h-full justify-center items-center">
         <h1 className="text-white">Loading...</h1>
       </div>
-    )
+    );
   }
   return (
-    <div className="shadow-inner crt bg-neutral-900 px-4 overflow-hidden rounded-3xl relative h-2/3 aspect-4/3 flex justify-center items-center">
-      <div className="w-3/4 py-8 text-white text-center">
-      <div className="text-white">
-        <div className="flex justify-center my-2 text-xl">
-          <h1 className="uppercase text-center">
-            Category: {trivias[actual].category}
-          </h1>
-        </div>
-        <div className="flex justify-center my-4">
-          <p className="text-center">{trivias[actual].question}</p>
-        </div>
-        <div className="flex justify-evenly my-4 text-black">
-          <Radio name="answer" id="True" color="green" value="True">
-            True
-          </Radio>
-          <Radio name="answer" id="False" color="red" value="False">
-            False
-          </Radio>
-        </div>
-        <div className="flex justify-between items-center">
-          <h1>{actual}/{quantity}</h1>
-          <Button />
-        </div>
+    <div className="text-white flex flex-wrap h-full justify-center content-center">
+      <div className="flex justify-center my-2 text-xl">
+        <h1 className="uppercase text-center">
+          Category: {trivias[actual].category}
+        </h1>
       </div>
+      <div className="flex justify-center my-4">
+        <p className="text-center">{trivias[actual].question}</p>
+      </div>
+      <div className="flex justify-evenly w-full my-4 text-black flex-row-reverse">
+        <Radio name="answer" id="True" value="True">
+          True
+        </Radio>
+        <Radio name="answer" id="False" value="False">
+          False
+        </Radio>
+      </div>
+      <div className="flex justify-between items-center w-full">
+        <h1>
+          {actual}/{quantity}
+        </h1>
+        <Button />
       </div>
     </div>
   );
